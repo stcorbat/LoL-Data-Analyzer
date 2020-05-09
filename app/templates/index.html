@@ -4,6 +4,12 @@
 <div class="container">
     <h1>Data Analysis</h1>
 
-
+    <form action="" method="get" novalidate>
+        <div class="form-group">
+            {{ form.summoner.label() }}
+            {{ form.summoner(class_="form-control") }}
+        </div>
+        {{ form.submit(class_="btn btn-info") }}
+    </form>
 </div>
 {% endblock %}
