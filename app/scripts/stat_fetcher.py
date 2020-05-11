@@ -1,6 +1,7 @@
 from app import db
 
 
+# the stored procedures in the database use the same name as the key from the forms.py selection
 def get_stat_total(stat, account_id, begin_time, queue):
     query = """
         CALL {} ('{}', {}, {})

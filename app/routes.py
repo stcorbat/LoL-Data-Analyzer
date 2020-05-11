@@ -4,7 +4,7 @@ from flask import render_template
 
 from app import app, db
 from app.forms import QueryForm
-from app.scripts import stat_fetcher
+from app.scripts import stat_fetcher, champion_parser
 
 
 summoners = db.Table('Summoners', db.metadata, autoload=True, autoload_with=db.engine)
@@ -28,14 +28,24 @@ def index():
         stat_total = stat_fetcher.get_stat_total(form.stat.data, account_id, time, queue)
         stat_by_champ = stat_fetcher.get_stat_by_champ(form.stat.data, account_id, time, queue)
 
+        stat_by_champ_arr = []
+        for r in stat_by_champ:
+            stat_by_champ_arr.append({
+                'champion': champion_parser.get_champion_name(r.champion),
+                'stat': r.stat,
+                'amount': r.amount
+            })
+        print(stat_by_champ_arr)
+
+        # these parse the second part of the tuples in the choices that are more human readable
         stat_desc = [item[1] for item in form.stat.choices if item[0] == form.stat.data][0]
         summoner_name = [item[1] for item in form.summoner.choices if item[0] == account_id][0]
     else:
         stat_total = None
-        stat_by_champ = None
+        stat_by_champ_arr = None
         stat_desc = None
         summoner_name = None
-    return render_template('index.html', form=form, stat_total=stat_total, stat_by_champ=stat_by_champ,
+    return render_template('index.html', form=form, stat_total=stat_total, stat_by_champ=stat_by_champ_arr,
                            stat_desc=stat_desc, summoner_name=summoner_name)
 
 
