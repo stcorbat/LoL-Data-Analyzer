@@ -1,22 +1,42 @@
+import datetime
+
 from flask import render_template
 
 from app import app, db
-from app.forms import SummonerSelect
+from app.forms import QueryForm
+from app.scripts import stat_fetcher
 
 
 summoners = db.Table('Summoners', db.metadata, autoload=True, autoload_with=db.engine)
+summoner_matches = db.Table('SummonerMatches', db.metadata, autoload=True, autoload_with=db.engine)
 
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     result = db.session.query(summoners).all()
-    form = SummonerSelect()
+    form = QueryForm()
     form.summoner.choices = [(r.account_id, r.summoner_name) for r in result]
     if form.validate_on_submit():
-        pass
+        account_id = form.summoner.data
 
-    return render_template('index.html', form=form)
+        queue = form.queue.data
+        begin_date = form.begin_date.data
+        time = datetime.datetime(year=int(begin_date.year), month=int(begin_date.month), day=int(begin_date.day))\
+            .timestamp() * 1000
+
+        stat_total = stat_fetcher.get_stat_total(form.stat.data, account_id, time, queue)
+        stat_by_champ = stat_fetcher.get_stat_by_champ(form.stat.data, account_id, time, queue)
+
+        stat_desc = [item[1] for item in form.stat.choices if item[0] == form.stat.data][0]
+        summoner_name = [item[1] for item in form.summoner.choices if item[0] == account_id][0]
+    else:
+        stat_total = None
+        stat_by_champ = None
+        stat_desc = None
+        summoner_name = None
+    return render_template('index.html', form=form, stat_total=stat_total, stat_by_champ=stat_by_champ,
+                           stat_desc=stat_desc, summoner_name=summoner_name)
 
 
 @app.route('/about')
