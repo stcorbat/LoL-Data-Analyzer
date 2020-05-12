@@ -24,7 +24,7 @@
 
             <div class="form-group col-md-4">
                 {{ form.begin_date.label() }}
-                {{ form.begin_date(class_="form-control",placeholder="MM/DD/YYYY") }}
+                {{ form.begin_date(class_="form-control",placeholder="MM/DD/YYYY",value="03/05/2020") }}
             </div>
         </div>
 
@@ -84,8 +84,6 @@
             {% endfor %}
         </tbody>
     </table>
-    {% else %}
-        <h1>nada</h1>
     {% endif %}
 </div>
 {% endblock %}

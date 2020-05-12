@@ -8,6 +8,14 @@ html, body {
     color: white;
 }
 
+a {
+    color: #0abde3;
+}
+
+a:hover {
+    color: #1dd1a1;
+}
+
 h1 {
     font-size: 3em;
 }
@@ -20,6 +28,8 @@ p {
     display: inline-block;
     font-size: 2em;
     padding: 1em 2.5em;
+    margin-right: 1.5em;
+    margin-left: 1.5em;
     border-radius: 1em;
     background-size: 200%;
     transition: 0.5s;

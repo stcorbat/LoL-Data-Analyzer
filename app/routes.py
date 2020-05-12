@@ -22,20 +22,28 @@ def index():
 
         queue = form.queue.data
         begin_date = form.begin_date.data
-        time = datetime.datetime(year=int(begin_date.year), month=int(begin_date.month), day=int(begin_date.day))\
-            .timestamp() * 1000
+        # begin date is an optional field and may not have a value
+        if begin_date is None:
+            time = 0
+        else:
+            time = datetime.datetime(year=int(begin_date.year), month=int(begin_date.month), day=int(begin_date.day))\
+                .timestamp() * 1000
 
-        stat_total = stat_fetcher.get_stat_total(form.stat.data, account_id, time, queue)
-        stat_by_champ = stat_fetcher.get_stat_by_champ(form.stat.data, account_id, time, queue)
+        stat = form.stat.data
 
-        stat_by_champ_arr = []
-        for r in stat_by_champ:
-            stat_by_champ_arr.append({
-                'champion': champion_parser.get_champion_name(r.champion),
-                'stat': r.stat,
-                'amount': r.amount
-            })
-        print(stat_by_champ_arr)
+        stat_total = stat_fetcher.get_stat_total(stat, account_id, time, queue)
+        if stat in stat_fetcher.by_champion_stats:
+            stat_by_champ = stat_fetcher.get_stat_by_champ(stat, account_id, time, queue)
+
+            stat_by_champ_arr = []
+            for r in stat_by_champ:
+                stat_by_champ_arr.append({
+                    'champion': champion_parser.get_champion_name(r.champion),
+                    'stat': r.stat,
+                    'amount': r.amount
+                })
+        else:
+            stat_by_champ_arr = None
 
         # these parse the second part of the tuples in the choices that are more human readable
         stat_desc = [item[1] for item in form.stat.choices if item[0] == form.stat.data][0]
