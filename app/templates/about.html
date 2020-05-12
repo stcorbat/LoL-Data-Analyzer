@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>About</h1>
+    <p>
+        The data for each league game is fetched using <a href="https://developer.riotgames.com/">Riot Games' API</a>.
+        I wrote a Python script that fetches all of a summoner's new games and stores the desired data in a personal
+        MySQL database.
+    </p>
+
+    <a href="https://github.com/stcorbat/LoL-Data-Fetcher" class="gradient-button">Script GitHub</a>
+    <a href="https://github.com/stcorbat/LoL-Data-Analyzer" class="gradient-button">Webapp GitHub</a>
+</div>
+{% endblock %}

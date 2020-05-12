@@ -2,6 +2,88 @@
 
 {% block content %}
 <div class="container">
-    <h1>Welcome to the LoL data analyzer</h1>
+    <h1>Data Analysis</h1>
+
+    {% if form.errors %}
+        {% for field, errors in form.errors.items() %}
+            <div class="alert alert-danger">{{ form[field].label }}: {{ ', '.join(errors) }}</div>
+        {% endfor %}
+    {% endif %}
+    <form action="" method="post" novalidate>
+        {{ form.csrf_token }}
+        <div class="form-group">
+            {{ form.summoner.label() }}
+            {{ form.summoner(class_="form-control") }}
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-8">
+                {{ form.queue.label() }}
+                {{ form.queue(class_="form-control") }}
+            </div>
+
+            <div class="form-group col-md-4">
+                {{ form.begin_date.label() }}
+                {{ form.begin_date(class_="form-control",placeholder="MM/DD/YYYY",value="03/05/2020") }}
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                {{ form.stat.label() }}
+                {{ form.stat(class_="form-control") }}
+            </div>
+
+            <div class="form-group col-md-8">
+                {{ form.filter.label() }}
+                {{ form.filter(class_="form-control") }}
+            </div>
+        </div>
+        {{ form.submit(class_="btn btn-info") }}
+    </form>
+
+    {% if stat_total %}
+    <h2>Overall</h2>
+    <table class="table table-dark">
+        <thead>
+            <tr>
+                <th>Summoner</th>
+                <th>{{ stat_desc }}</th>
+                <th># of Games</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for val in stat_total %}
+                <tr>
+                    <td>{{ summoner_name }}</td>
+                    <td>{{ val.stat }}</td>
+                    <td>{{ val.amount }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    {% if stat_by_champ %}
+    <h2>By Champion</h2>
+    <table class="table table-dark">
+        <thead>
+            <tr>
+                <th>Champion</th>
+                <th>{{ stat_desc }}</th>
+                <th># of Games</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for val in stat_by_champ %}
+                <tr>
+                    <td>{{ val.champion }}</td>
+                    <td>{{ val.stat }}</td>
+                    <td>{{ val.amount }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
 </div>
 {% endblock %}
